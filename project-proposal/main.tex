@@ -4,58 +4,44 @@
 \usepackage{enumitem}
 \usepackage{graphicx}
 \usepackage{xcolor}
-
-% -----------------------------------------------------
-% bvraghav-tiet-ucs503p-article.sty
-% -----------------------------------------------------
-
-% Variable: Lab Instructor
-\makeatletter \newcommand{\BvrSetLabInstructor}[1]{%
-  \gdef\Bvr@LabInstructor{#1}}
-% default
-\newcommand{\Bvr@LabInstructor}{Dr. Raghav %
-  B. Venkataramaiyer}
-% public accessor
-\newcommand{\BvrLabInstructorValue}{\Bvr@LabInstructor}
-\makeatother
-
-% Add subtitle
 \usepackage{titling}
-% -- Set title bold
-\pretitle{\begin{center}\bfseries\fontsize{18bp}{18bp}\selectfont}
-\makeatletter
+
+% -----------------------------------------------------
+% Custom formatting commands (simplified, self-contained)
+% -----------------------------------------------------
+
+\newcommand{\BvrLabInstructorValue}{Dr. Raghav B. Venkataramaiyer}
+
+\pretitle{\begin{center}\bfseries\huge}
 \newcommand{\BvrSubtitle}[1]{%
   \posttitle{%
     \par\end{center}
     \begin{center}\large#1\end{center}
     \vskip 0.5em}%
 }
-\makeatother
 
-% Hints in the section title(s)
 \newcommand{\BvrHint}[1]{%
   {\normalfont\normalsize\itshape\hfill #1}}
 
 % -----------------------------------------------------
 
-\title{Grievance-Resolution System for a Tier-2/3 City}
-
-\BvrSetLabInstructor{Dr. Raghav B. Venkataramaiyer}
+\title{StepUp App}
 
 \BvrSubtitle{%
   Project Proposal for UCS503P  \\
   Submitted to: \BvrLabInstructorValue \\ \bfseries
-  Thapar Institute of Engineering and Technology% 
+  Thapar Institute of Engineering and Technology%
 }
 
 \author{
-  Vidya Vaidyanathan, CSED%
-  \thanks{Roll No: \texttt{1024030xxx}, %
-    Email: \texttt{vvaidhanathan\_be24\@thapar.edu}}
-  \and 
-  Bhanurekha Ganesan, CSED%
-  \thanks{Roll No: \texttt{1024030xxx}, %
-    Email: \texttt{bganesan\_be24\@thapar.edu}}
+  Bhavya Jindal, CSED%
+  \thanks{Roll No: \texttt{1024030295}}
+  \and
+  Akshat Batra, CSED%
+  \thanks{Roll No: \texttt{1024030292}}
+  \and
+  Yash, CSED%
+  \thanks{Roll No: \texttt{1024030448}}
 }
 
 \date{\today}
@@ -65,80 +51,103 @@
 
 \section{Higher-order goal%
   \BvrHint{\ldots secondary framing}}
-This project aims to improve sustainable urban
-governance by reducing the time and effort required to
-resolve citizen issues. While the topic is broader than
-any single municipality, the immediate engineering
-objective is to translate \emph{efficient public
-  service delivery} into a measurable, deployable
-software solution.
+This project aims to support healthier, more socially connected student
+life on campus by making physical activity tracking trustworthy and by
+making it easier for students to find reliable sport partners. While
+the topic is broader than any single feature, the immediate engineering
+objective is to translate \emph{trustworthy activity tracking} and
+\emph{effective sport-group formation} into a measurable, deployable
+software solution: the StepUp App.
 
 \section{Time-to-value %
 \BvrHint{\ldots primary heuristic}}
 \begin{itemize}[leftmargin=0.7cm]
-    \item We will deliver meaningful increments quickly by prototyping the core user workflow and validating it with users within a short iteration window.
+    \item We will deliver meaningful increments quickly by prototyping the core user workflow of StepUp and validating it with users within a short iteration window.
     \item We will prioritize fast feedback over perfection by using weekly iterations (and targeting CI-backed automation early) to reduce release friction.
     \item Success is defined by what can be delivered and measured in the first iteration, then improved based on user feedback.
 \end{itemize}
 
 \section{Problem Statement}
-Citizens in a tier-2/3 Indian city face delays and uncertainty when reporting local issues (e.g., streetlight outages, water leakage, garbage accumulation, road potholes). Common pain points include:
+Campus fitness and sport-partner discovery on Thapar's campus currently
+suffer from two distinct gaps:
 \begin{itemize}[leftmargin=0.7cm]
-    \item \textbf{Fragmentation:} complaints are often made via multiple channels (calls, social media, paper forms), causing lost context.
-    \item \textbf{Low transparency:} citizens cannot easily see the status of their complaint (e.g., ``received'', ``assigned'', ``in progress'', ``resolved'').
-    \item \textbf{Slow coordination:} departments/field teams lack a unified, trackable workflow with clear ownership.
-    \item \textbf{Poor data quality:} duplicate or incomplete reports force rework and extend resolution time.
+    \item \textbf{Unverified activity data:} existing fitness-tracking approaches trust imported step and activity data without checking whether it reflects genuine walking or running. Records may instead come from phone shaking, duplicate syncs, or movement while travelling in a vehicle, which undermines any challenge or leaderboard built on top of that data.
+    \item \textbf{Sport-partner discovery as a filtered list, not a match:} students looking for regular sport partners or groups (e.g., badminton, football, running) currently rely on informal channels such as WhatsApp groups, rather than a system that actually matches them on sport, skill, availability, group size, location, and reliability.
 \end{itemize}
 
-\textbf{Why this matters now (contextual relevance):} In an urban setting with limited staff bandwidth, even small process improvements can noticeably reduce resolution delays and repeated submissions.
+\textbf{Target users:} Thapar students who want to (a) participate in
+campus fitness challenges with data they can trust, and (b) find
+regular sport partners or groups for sports such as badminton, football,
+and running.
+
+\textbf{Why this matters now (contextual relevance):} Any gamified
+fitness or matchmaking feature is only as useful as the trust students
+place in it; unverified activity data and ad-hoc partner discovery both
+directly undermine that trust, which motivates addressing both problems
+as first-class engineering concerns rather than afterthoughts.
 
 \section{Proposed Solution %
 \BvrHint{\ldots Software Proposition}}
 \subsection{Overview}
-Build a \textbf{web-based} ``Grievance-to-Resolution'' system with the following components:
+Build the \textbf{StepUp App}, consisting of an Android application and
+a web dashboard, with the following components:
 \begin{itemize}[leftmargin=0.7cm]
-    \item \textbf{Citizen submission portal:} users submit an issue with photo (optional), category, and locality/ward.
-    \item \textbf{Automated triage:} basic duplicate detection and completeness checks.
-    \item \textbf{Department workflow:} assign issues to relevant department/team and update statuses.
-    \item \textbf{Status transparency:} citizens track status and receive notifications when resolved.
-    \item \textbf{Admin/ops dashboard:} performance summaries (resolution time, backlog).
+    \item \textbf{Android application (student-facing):} activity synchronization via Health Connect, an on-device activity-integrity check, buddy matching requests, and challenge participation.
+    \item \textbf{Activity-integrity engine:} distinguishes genuine walking/running from phone shaking, duplicate/repeated sync records, and vehicle movement, running mostly on-device.
+    \item \textbf{Sport group matching:} treats sport-buddy formation as a group-formation/matching problem based on sport preference, skill level, availability, group size, coarse location, and reliability, rather than a filtered contact list.
+    \item \textbf{Web dashboard:} challenge configuration, pilot monitoring, and aggregate analytics (participation trends, integrity-flag rates, match success rates).
 \end{itemize}
 
 \subsection{Core workflow}
 \begin{enumerate}[leftmargin=0.7cm]
-    \item Citizen creates a complaint and receives a complaint ID immediately.
-    \item System validates completeness and suggests possible duplicates (lightweight similarity on text/category and approximate location).
-    \item Department staff update status (Received $\rightarrow$ Assigned $\rightarrow$ In Progress $\rightarrow$ Resolved).
-    \item Citizen views status updates and resolution notes.
+    \item Student links activity data through Health Connect on the Android app.
+    \item The on-device activity-integrity check evaluates incoming activity records (genuine walking/running vs.\ phone shaking, duplicate sync, or vehicle movement) before they count toward a challenge.
+    \item Student optionally submits a sport-buddy request specifying sport, skill level, available time slots, preferred group size, and coarse location.
+    \item The backend matching engine proposes a group or partner based on these constraints and each student's reliability history.
+    \item Admins/organizers use the web dashboard to configure challenges, monitor the pilot, and review aggregate analytics.
 \end{enumerate}
 
-\subsection{Operational constraints for an educational, tier-2/3 setting}
+\subsection{Operational constraints}
 \begin{itemize}[leftmargin=0.7cm]
-    \item Keep the solution usable on low-to-mid range devices via responsive web design.
-    \item Avoid dependence on advanced research algorithms; focus on workflow, automation, and system correctness.
-    \item Design for deployability using common web hosting and managed databases.
+    \item Activity data will be synchronized via Health Connect (not raw continuous GPS tracking).
+    \item The activity-integrity check should run primarily on-device to minimize data transmission and enable near-real-time feedback.
+    \item Matching will use only coarse location (e.g., locality/hostel block), not precise GPS coordinates.
+    \item The Android application will be built using Kotlin.
 \end{itemize}
 
 \section{Solution Approach %
 \BvrHint{\ldots Engineering focus}}
-This is an engineering course project, so we focus on scalable administrative and workflow aspects rather than novel algorithm research.
+This is an engineering course project, so we focus on scalable
+implementation, workflow correctness, and rigorous evaluation against
+simple baselines, rather than claiming state-of-the-art research
+contributions.
 
-\subsection{Duplicate/quality assistance %
+\subsection{Core technical approach %
 \BvrHint{\ldots non-research}}
-Duplicate detection will be heuristic-based:
-\begin{itemize}[leftmargin=0.7cm]
-    \item Normalize text (category + short description keywords).
-    \item Use a simple similarity measure (e.g., token overlap / TF-IDF cosine with threshold) without claiming state-of-the-art.
-    \item Show top candidate duplicates to staff for decision; never fully auto-delete or auto-reject.
-\end{itemize}
+\textbf{Activity integrity:} we will build a labelled dataset using
+short recorded sessions collected from team members' phones, covering
+genuine walking, genuine running, phone shaking/fake steps, duplicate or
+repeated sync records, and movement while travelling in a vehicle, using
+accelerometer and step data obtained through Health Connect. A
+rule-based baseline will use thresholds on step cadence, variance, and
+speed. A proposed detector will then be developed and compared against
+this baseline; we will not claim any specific accuracy figures until
+this evaluation is actually carried out.
 
-\subsection{Web architecture %
-\BvrHint{\ldots web-based solution}}
-A typical 3-tier web architecture:
+\textbf{Sport group matching:} sport-buddy formation will be treated as
+a group-formation/matching problem, with inputs including sport
+preference, self-reported skill level, available time slots, preferred
+group size, coarse location, and reliability based on previous
+no-shows. The proposed matching approach will be compared against two
+baselines: random matching and first-fit matching.
+
+\subsection{System architecture %
+\BvrHint{\ldots solution architecture}}
 \begin{itemize}[leftmargin=0.7cm]
-    \item \textbf{Frontend:} responsive UI for citizens and staff (status pages, submission form, dashboard).
-    \item \textbf{Backend API:} authentication, complaint submission, status transitions, assignment logic.
-    \item \textbf{Database:} store users, complaints, status history, attachments metadata.
+    \item \textbf{Android application:} built in Kotlin; handles Health Connect activity synchronization, the on-device activity-integrity check, buddy matching requests, and challenge participation.
+    \item \textbf{Web dashboard:} supports challenge configuration, pilot monitoring, and aggregate analytics, including participation trends, integrity-flag rates, and match success rates.
+    \item \textbf{Backend:} hosts the matching engine, exposes APIs consumed by both the Android application and the web dashboard, and performs server-side integrity-model comparison and evaluation logging.
+    \item \textbf{AI/ML layer:} covers the activity-integrity dataset, the rule-based baseline, the proposed detector, and model evaluation; supports both on-device inference and backend batch evaluation/logging. Specific backend framework and database technology choices are to be finalized during the design phase.
 \end{itemize}
 
 \subsection{CI/CD and fast delivery enabler}
@@ -151,28 +160,30 @@ CI/CD will be used to:
 
 \section{Evaluation Criterion %
 \BvrHint{\ldots measurable and attributable}}
-We define success using measurable metrics tied to the core workflow.
+We will define success using measurable metrics tied to the two core
+problems: activity integrity and sport group matching.
 
 \subsection{Primary evaluation metric}
-\textbf{Time-to-acknowledgement (TTA):} time between complaint submission and ``Received/Assigned'' status creation in the system.
+\textbf{F1 score of the proposed activity-integrity detector, compared
+against the rule-based baseline}, measured on our labelled dataset.
 \begin{itemize}[leftmargin=0.7cm]
-    \item Target: median TTA $\le$ 2 hours during pilot window.
-    \item Attribution: measured from database timestamps (submission vs. first status update by staff).
+    \item Target: the proposed detector should achieve a higher F1 score than the rule-based baseline. Specific target values will be set once baseline results are available.
+    \item Attribution: computed by comparing detector predictions against ground-truth labels on held-out recorded sessions.
 \end{itemize}
 
 \subsection{Secondary evaluation metrics}
 \begin{itemize}[leftmargin=0.7cm]
-    \item \textbf{Resolution time reduction:} reduce time-to-resolved compared to baseline process (even if baseline is collected via survey).
-    \item \textbf{Duplicate rate:} percentage of complaints flagged as duplicates and resolved without rework.
-    \item \textbf{User clarity:} citizen-reported clarity of status using a simple 1--5 feedback question.
-    \item \textbf{Reliability:} availability of staging/production for login and submission during business hours (e.g., $\ge$ 99\% uptime in pilot).
+    \item \textbf{Activity integrity:} precision, recall, false-positive rate, on-device latency, and battery cost of running the detector.
+    \item \textbf{Matching quality:} match acceptance rate, fairness across users, match stability, and successful completed sessions versus formed matches, each compared against random matching and first-fit matching baselines.
+    \item \textbf{Participation:} repeat participation observed in weeks 2--3 of the pilot compared with week 1.
 \end{itemize}
 
 \subsection{Pilot validation plan %
 \BvrHint{\ldots high-level}}
 \begin{itemize}[leftmargin=0.7cm]
-    \item Recruit 10--20 pilot users (citizens) and 3--5 staff roles (department simulation if real staff unavailable).
-    \item Compare metrics before/after within the iteration window by logging baseline estimates via short interviews or existing process observations.
+    \item Recruit volunteers from our batch/department and hostel/class groups, targeting approximately 40--60 students.
+    \item Run the pilot for 2--3 weeks, covering at least one complete challenge cycle.
+    \item Track activity-integrity flags, match acceptance/no-shows, and repeat participation throughout the pilot window to evaluate the metrics above.
 \end{itemize}
 
 \section{Scalability %
@@ -180,63 +191,87 @@ We define success using measurable metrics tied to the core workflow.
 The proposition should scale in both theoretical and practical senses.
 
 \begin{enumerate}[leftmargin=0.7cm]
-    \item \textbf{Scalable (theoretically):} The system should support growth in number of complaints and concurrent dashboard usage by:
+    \item \textbf{Scalable (theoretically):} The system should support growth in number of students, challenges, and concurrent matching requests by:
     \begin{itemize}[leftmargin=0.7cm]
-        \item decoupling components (frontend/backend),
-        \item enabling pagination and indexing for common queries,
-        \item using stateless API design.
+        \item decoupling the Android application, web dashboard, and backend,
+        \item enabling pagination and indexing for common queries (e.g., challenge participation, match history),
+        \item using stateless API design for the backend.
     \end{itemize}
-    
-    \item \textbf{Operationally deployable (practically):} The system should run on common web hosting:
+
+    \item \textbf{Operationally deployable (practically):} The system should run on commonly available hosting/deployment infrastructure:
     \begin{itemize}[leftmargin=0.7cm]
         \item managed database,
-        \item containerized or platform-hosted deployment,
+        \item containerized or platform-hosted backend deployment,
         \item CI/CD pipeline for staging/production.
     \end{itemize}
 \end{enumerate}
 
 \section{Engine availability heuristic}
-A mature set of ``engines'' (tooling/services) is available to implement this as a web-based project:
+A set of mature tools/services is expected to support this project:
 \begin{itemize}[leftmargin=0.7cm]
-    \item Web framework for REST APIs and templated/reactive pages.
-    \item Managed relational or document database.
-    \item Authentication approach (token-based or session-based).
-    \item Object storage for optional attachments (or local storage for pilot).
-    \item Test framework for unit/integration tests.
-    \item CI runner and staging deployment target.
+    \item Health Connect API for activity data synchronization on Android.
+    \item Kotlin/Android SDK for the student-facing application.
+    \item A backend web framework for REST APIs (specific choice to be finalized).
+    \item A managed relational or document database (specific choice to be finalized).
+    \item An authentication approach (token-based or session-based, to be finalized).
+    \item A test framework for unit/integration tests.
+    \item A CI runner and staging deployment target.
 \end{itemize}
-We will use these mature components to focus on workflow design, correctness, and measurement rather than inventing new infrastructure.
+We will use these components to focus on the activity-integrity and
+matching problems, and on measurement, rather than inventing new
+infrastructure.
 
 \section{Project scope and deliverables %
 \BvrHint{\ldots iteration-friendly}}
 \subsection{Initial deliverable %
 \BvrHint{\ldots first iteration}}
 \begin{itemize}[leftmargin=0.7cm]
-    \item Citizen submission form + complaint ID generation
-    \item Staff workflow: update status and assignment
-    \item Citizen status page: view timeline/history
-    \item Basic logging and timestamps for TTA measurement
-    \item CI: build + backend unit tests + linting
-    \item CD to staging with a single command or pipeline job
+    \item Labelled activity-integrity dataset (genuine walking, genuine running, phone shaking, duplicate sync, vehicle movement) and rule-based baseline.
+    \item Android application skeleton with Health Connect synchronization and challenge participation flow.
+    \item Initial matching formulation with random and first-fit baselines.
+    \item Basic logging for activity-integrity and matching metrics.
+    \item CI: build + backend unit tests + linting.
+    \item CD to staging with a single command or pipeline job.
 \end{itemize}
 
 \subsection{Subsequent deliverables}
 \begin{itemize}[leftmargin=0.7cm]
-    \item Lightweight duplicate suggestions with staff review
-    \item Notification layer (email/SMS optional in later iteration; can start with in-app notifications)
-    \item Admin dashboard for metrics and backlog
-    \item Improved search/filtering and indexed queries for scale readiness
+    \item Proposed activity-integrity detector, integrated on-device, and its evaluation against the rule-based baseline.
+    \item Refined sport-group matching approach, evaluated against random and first-fit baselines.
+    \item Web dashboard for challenge configuration, pilot monitoring, and aggregate analytics.
+    \item Privacy controls: consent flow, data/match-history deletion, and visibility controls.
+    \item Execution of the campus pilot and reporting of results against the evaluation metrics.
+\end{itemize}
+
+\section{Team Responsibilities %
+\BvrHint{\ldots proposed allocation}}
+The following is our proposed division of responsibilities for the
+project. This reflects planned ownership going forward and does not
+imply that any of this work has already been completed.
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{Bhavya Jindal:} Backend development, system integration across the Android application, web dashboard, and backend, and overall software engineering coordination.
+    \item \textbf{Akshat Batra:} Android application development, including Health Connect integration and integration of the activity-integrity check into the student-facing app.
+    \item \textbf{Yash:} AI/ML work for the activity-integrity model, including dataset creation and evaluation, along with support for the web/admin analytics views.
 \end{itemize}
 
 \section{Risks and mitigations}
 \begin{itemize}[leftmargin=0.7cm]
-    \item \textbf{Data privacy / consent:} minimize collected data; keep attachments optional; store only what is needed.
-    \item \textbf{Staff adoption:} provide an easy UI for status updates; keep workflow steps minimal; include shortcuts.
-    \item \textbf{Evaluation measurement ambiguity:} instrument timestamps and define clear status transitions before development begins.
-    \item \textbf{Operational issues in pilot:} use staging early; ensure CI/CD produces repeatable deployments.
+    \item \textbf{Data privacy / consent:} require explicit consent before collecting activity or location data; do not store continuous GPS trails and use only coarse location for matching; process and discard raw sensor data on-device where possible; provide data deletion, match-history deletion, and visibility controls so students choose what matched buddies can see.
+    \item \textbf{User adoption:} keep the on-device integrity check unobtrusive and the matching request flow simple, so participation in challenges and buddy matching requires minimal friction.
+    \item \textbf{Evaluation measurement ambiguity:} finalize the labelled-dataset protocol and define activity-integrity and matching metrics before development begins, to avoid ambiguity when comparing against baselines.
+    \item \textbf{Operational issues in pilot:} use staging early; ensure CI/CD produces repeatable deployments; test Health Connect synchronization across a range of devices before the pilot begins.
 \end{itemize}
 
 \section{Summary}
-This project proposes a deployable web platform to reduce grievance handling delays in a tier-2/3 city context. It meets the course criteria by emphasizing time-to-value through rapid iterations, implementing CI/CD to support frequent safe releases, and using measurable evaluation criteria (especially time-to-acknowledgement). It remains focused on engineering workflow and scalability readiness rather than research-driven novelty.
+This project proposes the StepUp App, a campus fitness and sports-partner
+platform for Thapar students that addresses two concrete problems:
+verifying whether imported activity data is genuine, and treating
+sport-buddy formation as a real matching problem rather than a filtered
+list. It meets the course criteria by emphasizing time-to-value through
+rapid iterations, implementing CI/CD to support frequent safe releases,
+and using measurable evaluation criteria for both the activity-integrity
+detector (compared against a rule-based baseline) and the matching
+approach (compared against random and first-fit baselines), validated
+through a campus pilot of approximately 40--60 students.
 
 \end{document}
