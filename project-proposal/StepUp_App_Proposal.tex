@@ -1,0 +1,204 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\hypersetup{hidelinks}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\setlist[itemize]{leftmargin=18pt,itemsep=7pt,topsep=5pt,parsep=0pt,partopsep=0pt}
+\setlist[enumerate]{leftmargin=22pt,itemsep=5pt,topsep=4pt,parsep=0pt,partopsep=0pt}
+\newcommand{\sechead}[2]{%
+  \vspace{1.7ex}%
+  \refstepcounter{section}\setcounter{subsection}{0}%
+  \noindent\makebox[\linewidth]{\normalfont\Large\bfseries \thesection\quad #1\hfill{\normalfont\itshape #2}}\par
+  \vspace{1.7ex}}
+\newcommand{\subsechead}[2]{%
+  \refstepcounter{subsection}%
+  \noindent\makebox[\linewidth]{\normalfont\large\bfseries \thesubsection\quad #1\hfill{\normalfont\itshape #2}}\par
+  \vspace{0.7ex}}
+\begin{document}
+
+\vspace*{30pt}
+\begin{center}
+{\fontsize{17}{20}\selectfont\bfseries StepUp App}\par
+\vspace{8pt}
+Project Proposal for UCS503P\par
+Submitted to: Dr. Anushka\par
+{\bfseries Thapar Institute of Engineering and Technology}\par
+\vspace{35pt}
+Bhavya Jindal, CSED\textsuperscript{*}\qquad Akshat Batra, CSED\textsuperscript{†}\qquad Yash, CSED\textsuperscript{‡}\par
+\vspace{15pt}
+August 18, 2026
+\end{center}
+\vspace{41pt}
+
+\sechead{Higher-order goal}{...secondary framing}
+This project aims to support healthier, more socially connected student life on campus by making physical activity tracking trustworthy and by making it easier for students to find reliable sport partners. While the topic is broader than any single feature, the immediate engineering objective is to translate trustworthy activity tracking and effective sport-group formation into a measurable, deployable software solution.
+
+\sechead{Time-to-value}{...primary heuristic}
+\begin{itemize}
+\item We will deliver meaningful increments quickly by prototyping the core user workflow of StepUp and validating it with users within a short iteration window.
+\item We will prioritize fast feedback over perfection by using weekly iterations (and targeting CI-backed automation early) to reduce release friction.
+\item Success is defined by what can be delivered and measured in the first iteration, then improved based on user feedback.
+\end{itemize}
+
+\sechead{Problem Statement}{}
+Campus fitness and sport-partner discovery on Thapar's campus currently suffer from two distinct gaps:
+\begin{itemize}
+\item \textbf{Unverified activity data:} existing fitness-tracking approaches trust imported step and activity data without checking whether it reflects genuine walking or running. Records may instead come from phone shaking, duplicate syncs, or movement while travelling in a vehicle, which undermines any challenge or leaderboard built on top of that data.
+\item \textbf{Sport-partner discovery as a filtered list, not a match:} students looking for regular sport partners or groups (e.g., badminton, football, running) currently rely on informal channels such as WhatsApp groups, rather than a system that actually matches them on sport, skill, availability, group size, location, and reliability.
+\end{itemize}
+\textit{Why this matters now (contextual relevance):} Any gamified fitness or matchmaking feature is only as useful as the trust students place in it; unverified activity data and ad-hoc partner discovery both directly undermine that trust, which motivates addressing both problems as first-class engineering concerns rather than afterthoughts.
+
+\vfill
+\begingroup\fontsize{8}{9}\selectfont
+\noindent\rule{205pt}{0.4pt}\par
+\noindent\textsuperscript{*}Roll No: 1024030295\par
+\noindent\textsuperscript{†}Roll No: 1024030292\par
+\noindent\textsuperscript{‡}Roll No: 1024030448\par
+\endgroup
+\newpage
+
+\sechead{Proposed Solution}{...Software Proposition}
+\subsechead{Overview}{}
+Build the StepUp App, consisting of an Android application and a web dashboard, with the following components:
+\begin{itemize}
+\item \textbf{Android application (student-facing):} activity synchronization via Health Connect, an on-device activity-integrity check, buddy matching requests, and challenge participation.
+\item \textbf{Activity-integrity engine:} distinguishes genuine walking/running from phone shaking, duplicate/repeated sync records, and vehicle movement, running mostly on-device.
+\item \textbf{Sport group matching:} treats sport-buddy formation as a group-formation/matching problem based on sport preference, skill level, availability, group size, coarse location, and reliability, rather than a filtered contact list.
+\item \textbf{Web dashboard:} challenge configuration, pilot monitoring, and aggregate analytics (participation trends, integrity-flag rates, match success rates).
+\end{itemize}
+
+\subsechead{Core workflow}{}
+\begin{enumerate}
+\item Student links activity data through Health Connect on the Android app.
+\item The on-device activity-integrity check evaluates incoming activity records (genuine walking/running vs. phone shaking, duplicate sync, or vehicle movement) before they count toward a challenge.
+\item Student optionally submits a sport-buddy request specifying sport, skill level, available time slots, preferred group size, and coarse location.
+\item The backend matching engine proposes a group or partner based on these constraints and each student's reliability history.
+\item Admins/organizers use the web dashboard to configure challenges, monitor the pilot, and review aggregate analytics.
+\end{enumerate}
+
+\subsechead{Operational constraints for a campus setting}{}
+\begin{itemize}
+\item Activity data will be synchronized via Health Connect (not raw continuous GPS tracking).
+\item The activity-integrity check should run primarily on-device to minimize data transmission and enable near-real-time feedback.
+\item Matching will use only coarse location (e.g., locality/hostel block), not precise GPS coordinates.
+\item The Android application will be built using Kotlin.
+\end{itemize}
+
+\sechead{Solution Approach}{...Engineering focus}
+This is an engineering course project, so we focus on scalable implementation, workflow correctness, and rigorous evaluation against simple baselines, rather than claiming state-of-the-art research contributions.
+
+\subsechead{Activity-integrity assistance}{...non-research}
+Activity-integrity detection will be developed and evaluated against a simple baseline:
+\begin{itemize}
+\item Build a labelled dataset using short recorded sessions covering genuine walking, genuine running, phone shaking/fake steps, duplicate or repeated sync records, and movement while travelling in a vehicle.
+\item Use a rule-based baseline with thresholds on step cadence, variance, and speed without claiming state-of-the-art.
+\item Develop the proposed detector and compare it against the rule-based baseline on held-out recorded sessions.
+\end{itemize}
+
+\subsechead{System architecture}{...solution architecture}
+A typical multi-component architecture:
+\begin{itemize}
+\item \textbf{Android application:} built in Kotlin; handles Health Connect activity synchronization, the on-device activity-integrity check, buddy matching requests, and challenge participation.
+\item \textbf{Web dashboard:} supports challenge configuration, pilot monitoring, and aggregate analytics, including participation trends, integrity-flag rates, and match success rates.
+\item \textbf{Backend:} hosts the matching engine, exposes APIs consumed by both the Android application and the web dashboard, and performs server-side integrity-model comparison and evaluation logging.
+\end{itemize}
+
+\subsechead{CI/CD and fast delivery enabler}{}
+CI/CD will be used to:
+\begin{itemize}
+\item Automatically build and run tests on every change.
+\item Produce repeatable deployment artifacts to staging.
+\item Enable safe and frequent releases of incremental features.
+\end{itemize}
+
+\sechead{Evaluation Criterion}{...measurable and attributable}
+We define success using measurable metrics tied to the two core problems: activity integrity and sport group matching.
+
+\subsechead{Primary evaluation metric}{}
+F1 score of the proposed activity-integrity detector, compared against the rule-based baseline, measured on our labelled dataset.
+\begin{itemize}
+\item \textbf{Target:} the proposed detector should achieve a higher F1 score than the rule-based baseline. Specific target values will be set once baseline results are available.
+\item \textbf{Attribution:} computed by comparing detector predictions against ground-truth labels on held-out recorded sessions.
+\end{itemize}
+
+\subsechead{Secondary evaluation metrics}{}
+\begin{itemize}
+\item \textbf{Activity integrity:} precision, recall, false-positive rate, on-device latency, and battery cost of running the detector.
+\item \textbf{Matching quality:} match acceptance rate, fairness across users, match stability, and successful completed sessions versus formed matches, each compared against random matching and first-fit matching baselines.
+\item \textbf{Participation:} repeat participation observed in weeks 2--3 of the pilot compared with week 1.
+\end{itemize}
+
+\subsechead{Pilot validation plan}{...high-level}
+\begin{itemize}
+\item Recruit volunteers from our batch/department and hostel/class groups, targeting approximately 40--60 students.
+\item Run the pilot for 2--3 weeks, covering at least one complete challenge cycle.
+\item Track activity-integrity flags, match acceptance/no-shows, and repeat participation throughout the pilot window to evaluate the metrics above.
+\end{itemize}
+
+\sechead{Scalability}{...with foresight}
+The proposition should scale in both theoretical and practical senses.
+\begin{enumerate}
+\item \textbf{Scalable (theoretically):} The system should support growth in number of students, challenges, and concurrent matching requests by:
+\begin{itemize}
+\item decoupling the Android application, web dashboard, and backend,
+\item enabling pagination and indexing for common queries (e.g., challenge participation, match history),
+\item using stateless API design for the backend.
+\end{itemize}
+\item \textbf{Operationally deployable (practically):} The system should run on commonly available hosting/deployment infrastructure:
+\begin{itemize}
+\item managed database,
+\item containerized or platform-hosted backend deployment,
+\item CI/CD pipeline for staging/production.
+\end{itemize}
+\end{enumerate}
+
+\sechead{Engine availability heuristic}{}
+A mature set of tools/services is available to implement this as a campus software project:
+\begin{itemize}
+\item Health Connect API for activity data synchronization on Android.
+\item Kotlin/Android SDK for the student-facing application.
+\item A backend web framework for REST APIs (specific choice to be finalized).
+\item A managed relational or document database (specific choice to be finalized).
+\item An authentication approach (token-based or session-based, to be finalized).
+\item A test framework for unit/integration tests.
+\item A CI runner and staging deployment target.
+\end{itemize}
+We will use these mature components to focus on the activity-integrity and matching problems, and on measurement, rather than inventing new infrastructure.
+
+\sechead{Project scope and deliverables}{...iteration-friendly}
+\subsechead{Initial deliverable}{...first iteration}
+\begin{itemize}
+\item Labelled activity-integrity dataset (genuine walking, genuine running, phone shaking, duplicate sync, vehicle movement) and rule-based baseline.
+\item Android application skeleton with Health Connect synchronization and challenge participation flow.
+\item Initial matching formulation with random and first-fit baselines.
+\item Basic logging for activity-integrity and matching metrics.
+\item CI: build + backend unit tests + linting.
+\item CD to staging with a single command or pipeline job.
+\end{itemize}
+
+\subsechead{Subsequent deliverables}{}
+\begin{itemize}
+\item Proposed activity-integrity detector, integrated on-device, and its evaluation against the rule-based baseline.
+\item Refined sport-group matching approach, evaluated against random and first-fit baselines.
+\item Web dashboard for challenge configuration, pilot monitoring, and aggregate analytics.
+\item Privacy controls: consent flow, data/match-history deletion, and visibility controls.
+\item Execution of the campus pilot and reporting of results against the evaluation metrics.
+\end{itemize}
+
+\sechead{Risks and mitigations}{}
+\begin{itemize}
+\item \textbf{Data privacy / consent:} require explicit consent before collecting activity or location data; do not store continuous GPS trails and use only coarse location for matching; process and discard raw sensor data on-device where possible; provide data deletion, match-history deletion, and visibility controls so students choose what matched buddies can see.
+\item \textbf{User adoption:} keep the on-device integrity check unobtrusive and the matching request flow simple, so participation in challenges and buddy matching requires minimal friction.
+\item \textbf{Evaluation measurement ambiguity:} finalize the labelled-dataset protocol and define activity-integrity and matching metrics before development begins, to avoid ambiguity when comparing against baselines.
+\item \textbf{Operational issues in pilot:} use staging early; ensure CI/CD produces repeatable deployments; test Health Connect synchronization across a range of devices before the pilot begins.
+\end{itemize}
+
+\sechead{Summary}{}
+This project proposes the StepUp App, a campus fitness and sports-partner platform for Thapar students that addresses two concrete problems: verifying whether imported activity data is genuine, and treating sport-buddy formation as a real matching problem rather than a filtered list. It meets the course criteria by emphasizing time-to-value through rapid iterations, implementing CI/CD to support frequent safe releases, and using measurable evaluation criteria for both the activity-integrity detector (compared against a rule-based baseline) and the matching approach (compared against random and first-fit baselines), validated through a campus pilot of approximately 40--60 students.
+
+\end{document}
